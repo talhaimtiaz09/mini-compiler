@@ -32,6 +32,47 @@ void processTokenLine(const char* line) {
     }
 }
 
+int tempVarCount = 1;  // To track temporary variable names like t1, t2, etc.
+
+const char* newTemp() {
+    static char temp[10];
+    sprintf(temp, "t%d", tempVarCount++);
+    return temp;
+}
+
+void generateICG(const char *line, FILE *out) {
+    char keyword[20], arg1[50], arg2[50], op[5], arg3[50];
+
+    printf("%s\n",line);
+    // Handling assignment with expression: e.g. ASSIGN c a + b
+    if (sscanf(line, "ASSIGN %s %s %s %s", arg1, arg2, op, arg3) == 4) {
+        const char* temp = newTemp(); // Generate a temporary variable
+        fprintf(out, "%s = %s %s %s\n", temp, arg2, op, arg3); // e.g., t1 = a + b
+        fprintf(out, "%s = %s\n", arg1, temp); // e.g., c = t1
+    }
+    // Handling simple assignment: e.g. ASSIGN c 0
+    else if (sscanf(line, "ASSIGN %s %s", arg1, arg2) == 2) {
+        fprintf(out, "%s = %s\n", arg1, arg2); // e.g., c = 0
+    }
+    else if (sscanf(line, "RETURN value: %s", arg1) == 1) {
+        fprintf(out, "return %s\n", arg1); // e.g., return 0
+    }
+    else if (sscanf(line, "DECL function %s", arg1) == 1) {
+        fprintf(out, "\nfunction %s:\n", arg1); // Function declaration
+    }
+    else if (strstr(line, "Starting parsing") || strstr(line, "Parsing complete")) {
+        // Ignore these lines
+    }
+    else if (sscanf(line, "USE variable '%[^']'", arg1) == 1) {
+        // For the USE variable, we just note the usage but do not generate code
+        // This can be used later for things like symbol table management
+        fprintf(out, "// USE: %s\n", arg1); // Just for tracking purposes
+    }
+    else {
+        fprintf(out, "// Unrecognized: %s", line); // For unrecognized lines
+    }
+}
+
 int main() {
     FILE *in = fopen("../parser/tokens.txt", "r");
 
@@ -40,14 +81,22 @@ int main() {
         return 1;
     }
 
-    initICGOutput();
+    //initICGOutput();
+    FILE *out = fopen("icg_output.txt", "w");
+    if (!out) {
+        perror("Error opening ICG output file");
+        return 1;
+    }
 
     char line[128];
     while (fgets(line, sizeof(line), in)) {
-        processTokenLine(line);
+        generateICG(line, out);
     }
 
-    closeICGOutput();
+    //closeICGOutput();
+    fclose(out);
     fclose(in);
+    printf("Intermediate Code Generation complete. Output written to icg_output.txt\n");
     return 0;
 }
+

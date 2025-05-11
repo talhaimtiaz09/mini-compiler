@@ -73,7 +73,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Include header file from Bison to get the token definitions
 #include "parser.tab.h"
 
 int yylex();
@@ -81,7 +80,7 @@ void yyerror(const char *s);
 
 extern int line_num;
 
-#line 85 "parser.tab.c"
+#line 84 "parser.tab.c"
 
 # ifndef YY_CAST
 #  ifdef __cplusplus
@@ -530,9 +529,9 @@ static const yytype_int8 yytranslate[] =
 /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_int8 yyrline[] =
 {
-       0,    36,    36,    40,    41,    45,    54,    55,    56,    60,
-      64,    65,    69,    73,    78,    79,    83,    84,    85,    89,
-      90,    98,   102,   103,   109
+       0,    30,    30,    34,    35,    39,    47,    48,    49,    53,
+      57,    58,    62,    66,    70,    71,    75,    80,    85,    91,
+      96,   101,   107,   111,   116
 };
 #endif
 
@@ -1124,102 +1123,119 @@ yyreduce:
   switch (yyn)
     {
   case 5: /* function: DEF IDENTIFIER LPAREN param_list RPAREN COLON statement_block  */
-#line 46 "parser.y"
+#line 40 "parser.y"
     {
-        // Output the function declaration: DEF <function_name>
         printf("DECL function %s\n", (yyvsp[-5].str));
-        free((yyvsp[-5].str));  // Free memory allocated by IDENTIFIER
+        free((yyvsp[-5].str));
     }
-#line 1134 "parser.tab.c"
+#line 1132 "parser.tab.c"
     break;
 
   case 12: /* statement: RETURN expression SEMI  */
-#line 69 "parser.y"
+#line 62 "parser.y"
                            {
-        // Print return statement
-        printf("RETURN value: %d\n", (yyvsp[-1].num));
+        printf("RETURN value: %s\n", (yyvsp[-1].str));
+        free((yyvsp[-1].str));
     }
-#line 1143 "parser.tab.c"
+#line 1141 "parser.tab.c"
     break;
 
   case 13: /* statement: IDENTIFIER ASSIGN expression SEMI  */
-#line 73 "parser.y"
+#line 66 "parser.y"
                                         {
-        // Print assignment: <variable> = <value>
-        printf("ASSIGN %s %d\n", (yyvsp[-3].str), (yyvsp[-1].num));
-        free((yyvsp[-3].str));  // Free memory allocated by IDENTIFIER
+        printf("ASSIGN %s %s\n", (yyvsp[-3].str), (yyvsp[-1].str));
+        free((yyvsp[-3].str)); free((yyvsp[-1].str));
     }
-#line 1153 "parser.tab.c"
+#line 1150 "parser.tab.c"
     break;
 
   case 16: /* expression: expression PLUS term  */
-#line 83 "parser.y"
-                         { (yyval.num) = (yyvsp[-2].num) + (yyvsp[0].num); }
-#line 1159 "parser.tab.c"
+#line 75 "parser.y"
+                         {
+        (yyval.str) = malloc(strlen((yyvsp[-2].str)) + strlen((yyvsp[0].str)) + 4);
+        sprintf((yyval.str), "%s + %s", (yyvsp[-2].str), (yyvsp[0].str));
+        free((yyvsp[-2].str)); free((yyvsp[0].str));
+    }
+#line 1160 "parser.tab.c"
     break;
 
   case 17: /* expression: expression MINUS term  */
-#line 84 "parser.y"
-                            { (yyval.num) = (yyvsp[-2].num) - (yyvsp[0].num); }
-#line 1165 "parser.tab.c"
+#line 80 "parser.y"
+                            {
+        (yyval.str) = malloc(strlen((yyvsp[-2].str)) + strlen((yyvsp[0].str)) + 4);
+        sprintf((yyval.str), "%s - %s", (yyvsp[-2].str), (yyvsp[0].str));
+        free((yyvsp[-2].str)); free((yyvsp[0].str));
+    }
+#line 1170 "parser.tab.c"
     break;
 
   case 18: /* expression: term  */
 #line 85 "parser.y"
-           { (yyval.num) = (yyvsp[0].num); }
-#line 1171 "parser.tab.c"
+           {
+        (yyval.str) = (yyvsp[0].str);
+    }
+#line 1178 "parser.tab.c"
     break;
 
   case 19: /* term: term MULT factor  */
-#line 89 "parser.y"
-                     { (yyval.num) = (yyvsp[-2].num) * (yyvsp[0].num); }
-#line 1177 "parser.tab.c"
+#line 91 "parser.y"
+                     {
+        (yyval.str) = malloc(strlen((yyvsp[-2].str)) + strlen((yyvsp[0].str)) + 4);
+        sprintf((yyval.str), "%s * %s", (yyvsp[-2].str), (yyvsp[0].str));
+        free((yyvsp[-2].str)); free((yyvsp[0].str));
+    }
+#line 1188 "parser.tab.c"
     break;
 
   case 20: /* term: term DIV factor  */
-#line 90 "parser.y"
-                      { 
-        if ((yyvsp[0].num) == 0) {
-            yyerror("Division by zero");
-            (yyval.num) = 0;
-        } else {
-            (yyval.num) = (yyvsp[-2].num) / (yyvsp[0].num);
-        }
+#line 96 "parser.y"
+                      {
+        (yyval.str) = malloc(strlen((yyvsp[-2].str)) + strlen((yyvsp[0].str)) + 4);
+        sprintf((yyval.str), "%s / %s", (yyvsp[-2].str), (yyvsp[0].str));
+        free((yyvsp[-2].str)); free((yyvsp[0].str));
     }
-#line 1190 "parser.tab.c"
+#line 1198 "parser.tab.c"
     break;
 
   case 21: /* term: factor  */
-#line 98 "parser.y"
-             { (yyval.num) = (yyvsp[0].num); }
-#line 1196 "parser.tab.c"
+#line 101 "parser.y"
+             {
+        (yyval.str) = (yyvsp[0].str);
+    }
+#line 1206 "parser.tab.c"
     break;
 
   case 22: /* factor: NUMBER  */
-#line 102 "parser.y"
-           { (yyval.num) = (yyvsp[0].num); }
-#line 1202 "parser.tab.c"
+#line 107 "parser.y"
+           {
+        (yyval.str) = malloc(20);
+        sprintf((yyval.str), "%d", (yyvsp[0].num));
+    }
+#line 1215 "parser.tab.c"
     break;
 
   case 23: /* factor: IDENTIFIER  */
-#line 103 "parser.y"
-                 { 
-        // Simply print identifier usage
+#line 111 "parser.y"
+                 {
         printf("USE variable '%s'\n", (yyvsp[0].str));
-        (yyval.num) = 0;  // Placeholder value
-        free((yyvsp[0].str));  // Free memory allocated by IDENTIFIER
+        (yyval.str) = strdup((yyvsp[0].str));
+        free((yyvsp[0].str));
     }
-#line 1213 "parser.tab.c"
+#line 1225 "parser.tab.c"
     break;
 
   case 24: /* factor: LPAREN expression RPAREN  */
-#line 109 "parser.y"
-                               { (yyval.num) = (yyvsp[-1].num); }
-#line 1219 "parser.tab.c"
+#line 116 "parser.y"
+                               {
+        (yyval.str) = malloc(strlen((yyvsp[-1].str)) + 3);
+        sprintf((yyval.str), "(%s)", (yyvsp[-1].str));
+        free((yyvsp[-1].str));
+    }
+#line 1235 "parser.tab.c"
     break;
 
 
-#line 1223 "parser.tab.c"
+#line 1239 "parser.tab.c"
 
       default: break;
     }
@@ -1412,19 +1428,18 @@ yyreturnlab:
   return yyresult;
 }
 
-#line 112 "parser.y"
+#line 123 "parser.y"
 
 
-/* Error handling function */
 void yyerror(const char *s) {
     fprintf(stderr, "Syntax error: %s\n", s);
 }
 
-/* Main function */
-/*int main() {
+int main() {
     printf("Starting parsing...\n");
-    yyparse();  // Start parsing the input
+    yyparse();
     printf("Parsing complete.\n");
     return 0;
-}*/
+}
+
 

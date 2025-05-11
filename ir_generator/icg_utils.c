@@ -18,11 +18,7 @@ void closeICGOutput() {
     if (out) fclose(out);
 }
 
-const char* newTemp() {
-    static char temp[10];
-    snprintf(temp, sizeof(temp), "t%d", tempVarCount++);
-    return strdup(temp);
-}
+
 
 void generateAssignment(const char* lhs, const char* rhs) {
     fprintf(out, "%s = %s\n", lhs, rhs);

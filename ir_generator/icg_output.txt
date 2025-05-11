@@ -1,0 +1,21 @@
+// USE: a
+// USE: b
+t1 = a + b
+c = t1
+// USE: c
+// USE: b
+t2 = c + b
+d = t2
+// USE: d
+e = d
+// USE: e
+return e
+
+function foo:
+// USE: z
+t3 = z + 1
+y = t3
+// USE: y
+return y
+
+function bar:

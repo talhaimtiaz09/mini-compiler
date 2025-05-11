@@ -1,7 +1,9 @@
 def foo(a, b):
 {
     c = a + b;
-    return c;
+    d = c + b;
+    e = d;
+    return e;
 }
 
 def bar(x):

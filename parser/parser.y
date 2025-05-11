@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-// Include header file from Bison to get the token definitions
 #include "parser.tab.h"
 
 int yylex();
@@ -12,25 +11,20 @@ void yyerror(const char *s);
 extern int line_num;
 %}
 
-/* Define YYSTYPE union for semantic values */
 %union {
-    int num;          // For numbers
-    char* str;        // For identifiers and strings
+    int num;
+    char* str;  // For identifiers and expressions
 }
 
-/* Declare token types and their values */
 %token <str> IDENTIFIER
 %token <num> NUMBER
 %token DEF RETURN IF ELSE WHILE
 %token PLUS MINUS MULT DIV ASSIGN EQ
 %token LPAREN RPAREN LBRACE RBRACE COLON COMMA SEMI
 
-/* Declare non-terminal types */
-%type <num> expression term factor
+%type <str> expression term factor
 
 %%
-
-/* Grammar rules */
 
 program:
     function_list
@@ -44,9 +38,8 @@ function_list:
 function:
     DEF IDENTIFIER LPAREN param_list RPAREN COLON statement_block
     {
-        // Output the function declaration: DEF <function_name>
         printf("DECL function %s\n", $2);
-        free($2);  // Free memory allocated by IDENTIFIER
+        free($2);
     }
 ;
 
@@ -67,60 +60,77 @@ statement_list:
 
 statement:
     RETURN expression SEMI {
-        // Print return statement
-        printf("RETURN value: %d\n", $2);
+        printf("RETURN value: %s\n", $2);
+        free($2);
     }
     | IDENTIFIER ASSIGN expression SEMI {
-        // Print assignment: <variable> = <value>
-        printf("ASSIGN %s %d\n", $1, $3);
-        free($1);  // Free memory allocated by IDENTIFIER
+        printf("ASSIGN %s %s\n", $1, $3);
+        free($1); free($3);
     }
     | IF expression COLON statement_block
     | WHILE expression COLON statement_block
 ;
 
 expression:
-    expression PLUS term { $$ = $1 + $3; }
-    | expression MINUS term { $$ = $1 - $3; }
-    | term { $$ = $1; }
+    expression PLUS term {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s + %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression MINUS term {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s - %s", $1, $3);
+        free($1); free($3);
+    }
+    | term {
+        $$ = $1;
+    }
 ;
 
 term:
-    term MULT factor { $$ = $1 * $3; }
-    | term DIV factor { 
-        if ($3 == 0) {
-            yyerror("Division by zero");
-            $$ = 0;
-        } else {
-            $$ = $1 / $3;
-        }
+    term MULT factor {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s * %s", $1, $3);
+        free($1); free($3);
     }
-    | factor { $$ = $1; }
+    | term DIV factor {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s / %s", $1, $3);
+        free($1); free($3);
+    }
+    | factor {
+        $$ = $1;
+    }
 ;
 
 factor:
-    NUMBER { $$ = $1; }
-    | IDENTIFIER { 
-        // Simply print identifier usage
-        printf("USE variable '%s'\n", $1);
-        $$ = 0;  // Placeholder value
-        free($1);  // Free memory allocated by IDENTIFIER
+    NUMBER {
+        $$ = malloc(20);
+        sprintf($$, "%d", $1);
     }
-    | LPAREN expression RPAREN { $$ = $2; }
+    | IDENTIFIER {
+        printf("USE variable '%s'\n", $1);
+        $$ = strdup($1);
+        free($1);
+    }
+    | LPAREN expression RPAREN {
+        $$ = malloc(strlen($2) + 3);
+        sprintf($$, "(%s)", $2);
+        free($2);
+    }
 ;
 
 %%
 
-/* Error handling function */
 void yyerror(const char *s) {
     fprintf(stderr, "Syntax error: %s\n", s);
 }
 
-/* Main function */
 int main() {
     printf("Starting parsing...\n");
-    yyparse();  // Start parsing the input
+    yyparse();
     printf("Parsing complete.\n");
     return 0;
 }
+
 

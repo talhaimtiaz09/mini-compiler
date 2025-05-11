@@ -1,13 +1,18 @@
 Starting parsing...
 USE variable 'a'
 USE variable 'b'
-ASSIGN c 0
+ASSIGN c a + b
 USE variable 'c'
-RETURN value: 0
+USE variable 'b'
+ASSIGN d c + b
+USE variable 'd'
+ASSIGN e d
+USE variable 'e'
+RETURN value: e
 DECL function foo
 USE variable 'z'
-ASSIGN y 1
+ASSIGN y z + 1
 USE variable 'y'
-RETURN value: 0
+RETURN value: y
 DECL function bar
 Parsing complete.
