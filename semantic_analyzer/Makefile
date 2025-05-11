@@ -20,11 +20,12 @@ parser.tab.c parser.tab.h: parser.y
 	@echo "✅ Bison files parser.tab.c and parser.tab.h built successfully!"
 
 semantic_analyzer: semantic.c symbol_table.c lex.yy.c
-	@gcc semantic.c symbol_table.c parser.tab.c lex.yy.c -o semantic_analyzer -I parser -L/opt/homebrew/opt/flex/lib -lfl
+#	@gcc semantic.c symbol_table.c parser.tab.c lex.yy.c -o semantic_analyzer -I parser -L/opt/homebrew/opt/flex/lib -lfl
+	@gcc semantic.c symbol_table.c ../parser/parser.tab.c ../lexer/lex.yy.c -o semantic_analyzer -I parser -lfl
 	@echo "✅ Built semantic_analyzer successfully."
 
 run: semantic_analyzer
-	@./semantic_analyzer < ../testcases/example1.py
+	@./semantic_analyzer < ../parser/tokens.txt
 	@echo "✅ Semantic analysis complete."
 
 clean:

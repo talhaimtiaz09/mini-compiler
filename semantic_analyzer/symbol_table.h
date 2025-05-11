@@ -1,11 +1,18 @@
 #ifndef SYMBOL_TABLE_H
 #define SYMBOL_TABLE_H
 
-void init_symbol_table();
-int add_symbol(const char *name, const char *kind); // returns 1 if added, 0 if already exists
-int lookup_symbol(const char *name);                // returns 1 if found
-void push_scope();
-void pop_scope();
-void cleanup_symbol_table();
+typedef struct Symbol {
+    char* name;
+    char* type;  // "int", "str", or "function"
+    int declared;  // 1 if declared, 0 if not
+    struct Symbol* next;
+} Symbol;
+
+// Function declarations for symbol table operations
+Symbol* createSymbol(char* name, char* type);
+void insertSymbol(Symbol* symbol);
+Symbol* lookupSymbol(char* name);
+void printSymbolTable();
 
 #endif
+

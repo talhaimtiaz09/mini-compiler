@@ -2,7 +2,9 @@ bison: parser.y
 	@bison -d parser.y
 # Target to build the parser
 parser: parser.tab.c lex.yy.c
-	@gcc -DPARSER parser.tab.c lex.yy.c -o parser -L/opt/homebrew/opt/flex/lib -lfl
+#	@gcc -DPARSER parser.tab.c lex.yy.c -o parser -L/opt/homebrew/opt/flex/lib -lfl
+	@gcc -DPARSER parser.tab.c lex.yy.c -o parser -lfl
+
 	@echo "✅ Parser built successfully!"
 
 # Target to generate the lexer (lex.yy.c) from lexer.l

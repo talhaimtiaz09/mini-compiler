@@ -1,69 +1,45 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "symbol_table.h"
 
-#define MAX_SYMBOLS 100
+Symbol* symbolTable = NULL;
 
-typedef struct
-{
-    char *name;     // Name of the variable
-    int type;       // Type (0 for int, 1 for string, etc.)
-    int is_defined; // Flag to check if variable is defined
-} Symbol;
+// Create a new symbol with a given name and type
+Symbol* createSymbol(char* name, char* type) {
+    Symbol* symbol = (Symbol*)malloc(sizeof(Symbol));
+    symbol->name = strdup(name);
+    symbol->type = strdup(type);
+    symbol->declared = 0;
+    symbol->next = NULL;
+    return symbol;
+}
 
-Symbol symbol_table[MAX_SYMBOLS];
-int symbol_count = 0;
+// Insert a symbol into the symbol table
+void insertSymbol(Symbol* symbol) {
+    symbol->next = symbolTable;
+    symbolTable = symbol;
+}
 
-// Find a symbol in the symbol table
-int find_symbol(char *name)
-{
-    for (int i = 0; i < symbol_count; i++)
-    {
-        if (strcmp(symbol_table[i].name, name) == 0)
-        {
-            return i;
+// Lookup a symbol by its name
+Symbol* lookupSymbol(char* name) {
+    Symbol* current = symbolTable;
+    while (current != NULL) {
+        if (strcmp(current->name, name) == 0) {
+            return current;
         }
+        current = current->next;
     }
-    return -1;
+    return NULL;
 }
 
-// Add a new symbol to the table
-void add_symbol(char *name, int type)
-{
-    if (find_symbol(name) != -1)
-    {
-        printf("Error: Variable '%s' already defined.\n", name);
-        exit(1);
+// Print the symbol table (for debugging purposes)
+void printSymbolTable() {
+    printf("Symbol Table:\n");
+    Symbol* current = symbolTable;
+    while (current != NULL) {
+        printf("Name: %s, Type: %s, Declared: %d\n", current->name, current->type, current->declared);
+        current = current->next;
     }
-    symbol_table[symbol_count].name = strdup(name);
-    symbol_table[symbol_count].type = type;
-    symbol_table[symbol_count].is_defined = 0;
-    symbol_count++;
 }
 
-// Mark a symbol as defined
-void mark_symbol_defined(char *name)
-{
-    int index = find_symbol(name);
-    if (index == -1)
-    {
-        printf("Error: Variable '%s' not declared.\n", name);
-        exit(1);
-    }
-    symbol_table[index].is_defined = 1;
-}
-
-// Check if a symbol is defined
-void check_variable_defined(char *name)
-{
-    int index = find_symbol(name);
-    if (index == -1)
-    {
-        printf("Error: Variable '%s' not declared.\n", name);
-        exit(1);
-    }
-    if (!symbol_table[index].is_defined)
-    {
-        printf("Warning: Variable '%s' declared but not defined.\n", name);
-    }
-}

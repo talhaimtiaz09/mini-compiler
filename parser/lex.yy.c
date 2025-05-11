@@ -1,5 +1,5 @@
 
-#line 2 "lex.yy.c"
+#line 3 "lex.yy.c"
 
 #define  YY_INT_ALIGNED short int
 
@@ -505,8 +505,8 @@ const char* token_name(int token) {
     }
 }
 
-#line 508 "lex.yy.c"
 #line 509 "lex.yy.c"
+#line 510 "lex.yy.c"
 
 #define INITIAL 0
 
@@ -726,7 +726,7 @@ YY_DECL
 #line 45 "../lexer/lexer.l"
 
 
-#line 729 "lex.yy.c"
+#line 730 "lex.yy.c"
 
 	while ( /*CONSTCOND*/1 )		/* loops until end-of-file is reached */
 		{
@@ -914,7 +914,7 @@ YY_RULE_SETUP
 #line 85 "../lexer/lexer.l"
 ECHO;
 	YY_BREAK
-#line 917 "lex.yy.c"
+#line 918 "lex.yy.c"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

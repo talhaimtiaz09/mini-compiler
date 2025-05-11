@@ -43,11 +43,6 @@ function_list:
 
 function:
     DEF IDENTIFIER LPAREN param_list RPAREN COLON statement_block
-    {
-        // Output the function declaration: DEF <function_name>
-        printf("DECL function %s\n", $2);
-        free($2);  // Free memory allocated by IDENTIFIER
-    }
 ;
 
 param_list:
@@ -67,13 +62,12 @@ statement_list:
 
 statement:
     RETURN expression SEMI {
-        // Print return statement
-        printf("RETURN value: %d\n", $2);
+        printf("Return value: %d\n", $2);
     }
     | IDENTIFIER ASSIGN expression SEMI {
-        // Print assignment: <variable> = <value>
-        printf("ASSIGN %s %d\n", $1, $3);
-        free($1);  // Free memory allocated by IDENTIFIER
+        // Variable assignments not stored in this simple version
+        printf("Assignment to variable '%s' = %d\n", $1, $3);
+        free($1);
     }
     | IF expression COLON statement_block
     | WHILE expression COLON statement_block
@@ -101,10 +95,9 @@ term:
 factor:
     NUMBER { $$ = $1; }
     | IDENTIFIER { 
-        // Simply print identifier usage
-        printf("USE variable '%s'\n", $1);
-        $$ = 0;  // Placeholder value
-        free($1);  // Free memory allocated by IDENTIFIER
+        printf("Warning: variable '%s' not defined, returning 0\n", $1);
+        free($1);
+        $$ = 0; 
     }
     | LPAREN expression RPAREN { $$ = $2; }
 ;
@@ -123,4 +116,3 @@ int main() {
     printf("Parsing complete.\n");
     return 0;
 }
-
