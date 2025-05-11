@@ -1,0 +1,7 @@
+Starting parsing...
+Warning: variable 'a' not defined, returning 0
+Warning: variable 'b' not defined, returning 0
+Assignment to variable 'x' = 0
+Warning: variable 'x' not defined, returning 0
+Return value: 0
+Parsing complete.

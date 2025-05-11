@@ -1,0 +1,11 @@
+def foo(a, b):
+{
+    c = a + b;
+    return c;
+}
+
+def bar(x):
+{
+    y = z + 1;
+    return y;
+}
