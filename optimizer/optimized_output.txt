@@ -1,0 +1,7 @@
+t1 = a + b
+t2 = t1 + b
+return d
+function foo:
+t3 = z + 1
+return t3
+function bar:

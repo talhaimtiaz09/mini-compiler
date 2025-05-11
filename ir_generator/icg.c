@@ -45,7 +45,10 @@ void generateICG(const char *line, FILE *out) {
 
     printf("%s\n",line);
     // Handling assignment with expression: e.g. ASSIGN c a + b
-    if (sscanf(line, "ASSIGN %s %s %s %s", arg1, arg2, op, arg3) == 4) {
+    if (sscanf(line, "DECL function %s", arg1) == 1) {
+        fprintf(out, "\nfunction %s:\n", arg1); // Function declaration
+    }
+    else if (sscanf(line, "ASSIGN %s %s %s %s", arg1, arg2, op, arg3) == 4) {
         const char* temp = newTemp(); // Generate a temporary variable
         fprintf(out, "%s = %s %s %s\n", temp, arg2, op, arg3); // e.g., t1 = a + b
         fprintf(out, "%s = %s\n", arg1, temp); // e.g., c = t1
@@ -56,9 +59,6 @@ void generateICG(const char *line, FILE *out) {
     }
     else if (sscanf(line, "RETURN value: %s", arg1) == 1) {
         fprintf(out, "return %s\n", arg1); // e.g., return 0
-    }
-    else if (sscanf(line, "DECL function %s", arg1) == 1) {
-        fprintf(out, "\nfunction %s:\n", arg1); // Function declaration
     }
     else if (strstr(line, "Starting parsing") || strstr(line, "Parsing complete")) {
         // Ignore these lines

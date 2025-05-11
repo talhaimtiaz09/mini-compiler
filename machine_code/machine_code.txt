@@ -1,0 +1,15 @@
+LOAD a -> Opcode: 0x01
+ADD b -> Opcode: 0x02
+STORE t1 -> Opcode: 0x06
+LOAD t1 -> Opcode: 0x01
+ADD b -> Opcode: 0x02
+STORE t2 -> Opcode: 0x06
+LOAD d -> Opcode: 0x01
+RET -> Opcode: 0x07
+LABEL foo: -> Opcode: 0x08
+LOAD z -> Opcode: 0x01
+ADD 1 -> Opcode: 0x02
+STORE t3 -> Opcode: 0x06
+LOAD t3 -> Opcode: 0x01
+RET -> Opcode: 0x07
+LABEL bar: -> Opcode: 0x08

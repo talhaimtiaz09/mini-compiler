@@ -1922,7 +1922,7 @@ void yyfree (void * ptr )
 #line 85 "lexer.l"
 
 
-/*#ifndef PARSER
+#ifndef PARSER
 int main() {
     int tok;
     while ((tok = yylex())) {
@@ -1931,5 +1931,5 @@ int main() {
     return 0;
 }
 
-#endif*/
+#endif
 

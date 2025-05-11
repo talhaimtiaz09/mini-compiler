@@ -30,7 +30,7 @@ icg: icg.c icg_utils.c
 	@gcc icg.c icg_utils.c -o icg
 	@echo "✅ Built ICG (Intermediate Code Generator) successfully."
 
-run-icg: icg
+run: icg
 	@./icg < ../parser/tokens.txt
 	@echo "✅ ICG generation complete. Output written to icg_output.txt"
 
